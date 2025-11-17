@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mantención de Artículos - Teletón</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0; background: #f6f6f9;
+    }
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; padding: 9px 32px 9px 12px;
+      border-bottom: 4px solid #C20B1D;
+      min-height: 55px;
+    }
+    .header-left {
+      display: flex; align-items: center; gap: 18px; min-width:220px;
+    }
+    .header-logo {
+      height: 30px;
+      margin-right: 7px;
+      vertical-align: middle;
+    }
+    .header-title {
+      font-size: 2em; color: #151818; font-weight: bold;
+      letter-spacing: 1.5px;
+      margin-right:7px;
+    }
+    .menu-btn {
+      font-size: 1.13em;
+      color: #31345f;
+      font-weight: 500;
+      background:none; border:none; cursor:pointer;
+      margin-left: 5px;
+      vertical-align: bottom;
+      display:inline-flex;
+      align-items:center;
+      gap:2px;
+    }
+    .menu-btn svg { margin-left:2px;}
+    .header-user {
+      display: flex; align-items: center; gap: 7px;
+    }
+    .noti-badge {
+      background: #C20B1D;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 7px;
+      font-size: 1em;
+      padding: 3px 13px;
+    }
+    .header-username{
+      font-weight:600; font-size:1.07em;color:#23223e;margin-right:4px;
+    }
+    .header-userdet {
+      color: #888; font-size: .96em; margin-right:5px;
+    }
+    .header-user-icon {font-size:1.49em;}
+    .container { max-width: 1060px; margin: 36px auto 28px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 15px #d0d2d3; padding: 32px 36px 28px 36px; }
+    .tabs { display: flex; border-bottom: 2.5px solid #155187; margin-bottom: 24px; gap: 3px;}
+    .tab { cursor: pointer; padding: 13px 35px; background: #f3f6fb; color: #155187; border-radius: 10px 10px 0 0; border: none; font-size: 1.18em; font-weight: 600; transition: background .13s; font-family: inherit; margin-bottom: 0;}
+    .tab.active { background: #fff; color: #C20B1D; border-bottom:2.5px solid #fff;}
+    .tab-content { border: 1px solid #155187; border-radius: 0 0 14px 14px; background: #fff; padding: 34px 20px 30px 28px; min-height: 190px; margin-bottom: 22px;}
+    .panel-box { background: #f9fafc; border-radius: 16px; box-shadow:0 1px 9px #eee;padding:18px 20px 22px 20px;max-width:740px;margin:18px auto 0 auto;border:1.5px solid #d4d6de;}
+    .row-filtros { display: flex; gap: 24px; flex-wrap: wrap; align-items: end; width: 100%;}
+    .filtro-group { display: flex; flex-direction: column; min-width: 150px;}
+    .filtro-group label { color: #155187; font-weight: 600; font-size: 1em; margin-bottom: 7px;}
+    select, input[type="text"], input[type="date"], input[type="number"] { border: 1.5px solid #b4c3da; border-radius: 7px; padding: 9px 13px; font-size: 15px; margin-bottom: 0; background: #fff; font-family: inherit;}
+    .btn { background: #155187; color: #fff; border-radius: 7px; border: none; cursor:pointer; padding: 10px 26px; font-size: 1em; font-weight: 700; box-shadow: 0 2px 7px #dceafa; margin-right: 13px;}
+    .btn:hover { background:#457abd; }
+    .btn-red { background: #C20B1D; }
+    .btn-red:hover { background: #a41822;}
+    .custom-table { width:100%; border-collapse:collapse; font-size:15px; margin-top: 11px; box-shadow: 0 0 7px #d1d1d1;}
+    .custom-table th { background:#C20B1D; color:#fff; font-weight:600; padding:11px 7px; font-size:15px; border: none; letter-spacing: .08em;}
+    .custom-table td { padding:8px 7px; border-bottom:1px solid #ededed; font-size:1em;}
+    .custom-table tbody tr:nth-child(even){ background:#f3f8fc;}
+    .acciones-cell img { height:22px;width:22px; margin-right:5px; cursor:pointer; vertical-align:middle; opacity:.92;transition:opacity .15s;}
+    .acciones-cell img:hover { opacity:1; }
+    .total-registros { font-size:15px; color:#384059; margin-top:8px;}
+    .estado-label { font-weight:600; color:#155187;}
+    .bodega-label { color:#23a671; font-weight:500;}
+    .compra-directa-toolbar { margin-bottom: 13px; padding: 7px 13px; background:#f8fafd; border-radius: 8px 8px 0 0; border-bottom: 1px solid #ddd; display: flex; align-items: center; gap: 9px; font-size: 1.08em;}
+    .icono-toolbar { height: 27px; cursor: pointer;}
+    input[type="number"]:read-only { background: #e5e9ec; color: #7f7f7f;}
+    .devolucion-ok {
+      color:#31b84b; font-weight:600; margin-top:18px; background:#e9f9ed; padding:9px 16px;
+      border-radius:8px; font-size:1.07em;
+    }
+    @media (max-width: 1024px) { .container, .tabs, .tab-content, .panel-box { max-width: 97vw; } .header { padding-left: 10px; padding-right:10px;} }
+    @media (max-width: 700px) { .row-filtros { flex-direction: column; gap:10px;} .filtro-group { min-width: 100vw;} .custom-table th, .custom-table td { font-size: 13.5px;} }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_Telet%C3%B3n_Chile.png" class="header-logo" alt="Teletón"/>
+      <span class="header-title">Teletón</span>
+      <button class="menu-btn">
+        Menú
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#155187" style="vertical-align:middle"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+    </div>
+    <div class="header-user">
+      <span class="noti-badge">10</span>
+      <span class="header-username">Cesar Jimenez</span>
+      <span class="header-userdet">IT 131 - SANTIAGO</span>
+      <span class="header-user-icon">
+        <svg width="18" height="18" fill="purple"><circle cx="9" cy="7" r="5"/><ellipse cx="9" cy="14.5" rx="7" ry="4"/></svg>
+      </span>
+    </div>
+  </div>
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" data-tab="ingreso-fin700">Ingreso FIN700</div>
+      <div class="tab" data-tab="compra-directa">Compra Directa</div>
+      <div class="tab" data-tab="estados-articulos">Estados Artículos</div>
+      <div class="tab" data-tab="devolucion-comodato">Devolución Comodato</div>
+    </div>
+    <!-- INGRESO FIN700 -->
+    <div class="tab-content" id="ingreso-fin700">
+      <div class="panel-box">
+        <form onsubmit="return false;">
+          <div class="row-filtros" style="gap:30px;">
+            <div class="filtro-group">
+              <label for="fin700-input">Ingrese número FIN700:</label>
+              <input id="fin700-input" type="text" placeholder="Ej: 123456" />
+            </div>
+            <div class="filtro-group" style="align-self:flex-end;">
+              <button id="btn-crear-articulos" class="btn">Crear artículos en bodega</button>
+            </div>
+          </div>
+        </form>
+        <div id="articulos-list" style="margin-top:16px;"></div>
+      </div>
+    </div>
+    <!-- COMPRA DIRECTA -->
+    <div class="tab-content" id="compra-directa" style="display:none;">
+      <div class="compra-directa-toolbar">
+        <img src="https://cdn-icons-png.flaticon.com/128/84/84088.png" class="icono-toolbar" title="Guardar" id="btn-guardar-compra"/>
+        <img src="https://cdn-icons-png.flaticon.com/128/45/45010.png" class="icono-toolbar" title="Buscar" id="btn-buscar-compra"/>
+        <img src="https://cdn-icons-png.flaticon.com/128/748/748137.png" class="icono-toolbar" title="Documentar" id="btn-documentar-compra"/>
+        Compra directa
+      </div>
+      <div class="panel-box">
+        <form>
+          <div class="row-filtros" style="gap:30px;">
+            <div class="filtro-group">
+              <label for="bodega">Bodega</label>
+              <select id="bodega" name="bodega" style="width:220px;">
+                <option>Kinesiología</option>
+                <option>Terapia ocupacional</option>
+                
+              </select>
+              <label for="subgrupo">Subgrupo artículo</label>
+              <select id="subgrupo" name="subgrupo" style="width:220px;">
+                <option>SILLA DE RUEDAS</option>
+                <option>ESPECIAL</option>
+                <option>NEUROLOGICA</option>
+              </select>
+              <div style="margin:7px 0; color:#155187;font-weight:bold;">0448 : SILLA DE RUEDAS ESPECIAL</div>
+            </div>
+            <div class="filtro-group">
+              <label for="orden">N° orden de compra</label>
+              <input id="orden" name="orden" type="text" style="width:220px;" />
+              <label for="factura">N° factura</label>
+              <input id="factura" name="factura" type="text" style="width:220px;" />
+              <label for="rutproveedor">RUT Proveedor</label>
+              <input id="rutproveedor" name="rutproveedor" type="text" style="width:220px;" />
+            </div>
+            <div class="filtro-group">
+              <label for="cantidad">Cantidad</label>
+              <input id="cantidad" name="cantidad" type="number" value="1" style="width:80px;" readonly />
+              <label for="correlativo">Correlativo <span style="color:#C20B1D;">(*)</span></label>
+              <input id="correlativo" name="correlativo" type="text" style="width:120px;" />
+            </div>
+          </div>
+        </form>
+        <div id="compra-directa-result"></div>
+      </div>
+    </div>
+    <!-- ESTADOS DE ARTICULOS -->
+    <div class="tab-content" id="estados-articulos" style="display:none;">
+      <div class="panel-box">
+        <form id="filtros-form">
+          <div class="row-filtros">
+            <div class="filtro-group">
+              <label for="estadoArticulo">Estado artículo</label>
+              <select id="estadoArticulo">
+                <option value="TODOS">TODOS</option>
+                <option value="EN TRANSITO">EN TRANSITO</option>
+                <option value="DISPONIBLE">DISPONIBLE</option>
+                <option value="ASIGNADO">ASIGNADO</option>
+                <option value="EN REPARACION">EN REPARACION</option>
+                <option value="PARA RECICLAR">PARA RECICLAR</option>
+                <option value="DEVUELTO">DEVUELTO</option>
+                <option value="VENDIDO">VENDIDO</option>
+                <option value="DONADO">DONADO</option>
+              </select>
+            </div>
+            <div class="filtro-group">
+              <label for="tipoAyuda">Tipo ayuda técnica</label>
+              <select id="tipoAyuda">
+                <option value="TODOS">TODOS</option>
+                <option value="SILLA DE RUEDAS">SILLA DE RUEDAS</option>
+                <option value="BASTÓN">BASTÓN</option>
+                //<option value="KIT ELECTRÓNICO">KIT ELECTRÓNICO</option>
+              </select>
+            </div>
+            <div class="filtro-group">
+              <label for="codigoBarra">Código barra</label>
+              <input id="codigoBarra" type="text">
+            </div>
+            <div class="filtro-group">
+              <label for="subgrupoFiltro">Subgrupo</label>
+              <input id="subgrupoFiltro" type="text">
+            </div>
+            <div class="filtro-group">
+              <label for="fechaDesde">Fecha desde</label>
+              <input id="fechaDesde" type="date">
+            </div>
+            <div class="filtro-group">
+              <label for="fechaHasta">Fecha hasta</label>
+              <input id="fechaHasta" type="date">
+            </div>
+            <div class="filtro-group" style="align-self:center;">
+              <button type="submit" class="btn">Filtrar</button>
+              <button type="button" class="btn btn-red" id="limpiar-filtros">Limpiar filtros</button>
+            </div>
+          </div>
+        </form>
+        <table class="custom-table" id="tabla-articulos">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Paciente</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Bodega</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="total-registros" id="total-registros">Total: <b>0</b></div>
+      </div>
+    </div>
+    <!-- DEVOLUCIÓN COMODATO -->
+    <div class="tab-content" id="devolucion-comodato" style="display:none;">
+      <div class="panel-box">
+        <h3 style="font-weight:600;color:#155187;">Devolución Comodato</h3>
+        <form id="comodato-form" autocomplete="off">
+          <div class="row-filtros" style="gap:34px;">
+            <div class="filtro-group">
+              <label for="comodato-articulo">Artículo a devolver:</label>
+              <input type="text" id="comodato-articulo" placeholder="Ej: Silla Ruedas 001" />
+            </div>
+            <div class="filtro-group">
+              <label for="comentario">Comentario:</label>
+              <input type="text" id="comentario" placeholder="Opcional" />
+            </div>
+            <div class="filtro-group" style="align-self:center;">
+              <button id="btn-confirmar-devolucion" class="btn btn-red" type="button">Confirmar devolución</button>
+            </div>
+          </div>
+        </form>
+        <div id="devolucion-result"></div>
+      </div>
+    </div>
+  </div>
+<script>
+  // Tabs functionality
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.onclick = function() {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.style.display='none');
+      tab.classList.add('active');
+      document.getElementById(tab.getAttribute('data-tab')).style.display = 'block';
+    }
+  });
+  // INGRESO FIN700 funcional: persistente
+  document.getElementById('btn-crear-articulos').onclick = function() {
+    const fin700 = document.getElementById('fin700-input').value.trim();
+    const area = document.getElementById('articulos-list');
+    if (!fin700) {alert('Ingrese un número FIN700 válido.');return;}
+    const articulosSimulados = [
+      { id: 'SR001', nombre: 'Silla de Ruedas', cantidad: 5 },
+      //{ id: 'BS002', nombre: 'Bastón', cantidad: 2 },
+      //{ id: 'KT003', nombre: 'Kit Electrónico', cantidad: 7 }
+    ];
+    let html = '<table class="custom-table"><thead><tr><th>ID</th><th>Nombre</th><th>Cantidad</th></tr></thead><tbody>';
+    articulosSimulados.forEach(a => {html += `<tr><td>${a.id}</td><td>${a.nombre}</td><td>${a.cantidad}</td></tr>`;});
+    html += '</tbody></table>';
+    area.innerHTML = html;
+  };
+  // COMPRA DIRECTA simulación
+  document.getElementById('btn-guardar-compra').onclick = () =>alert('Guardando registro de compra directa...');
+  document.getElementById('btn-buscar-compra').onclick = () =>alert('Buscando registro de compra directa...');
+  document.getElementById('btn-documentar-compra').onclick = () =>alert('Documentando registro de compra directa...');
+  // ESTADOS DE ARTICULOS
+  const articulosData = [
+    {codigo: "ES09ITL-9620", paciente: "87439 - BRYAN STEVENS", descripcion: "AT-BASTITE LARGO-MARCO", estado: "EN DEVOLUCION", tipoAyuda: "BASTÓN", subgrupo: "BASTITE", fecha: "2025-11-01", codBarra: "ES09ITL-9620", bodega: "BODEGA COMODATO TERAPIA"},
+    {codigo: "ES09ITL-4957", paciente: "27653 - FRANCISCO VILLA", descripcion: "AT-BASTITE CORTO-MARCO", estado: "EN TRANSITO", tipoAyuda: "BASTÓN", subgrupo: "BASTITE", fecha: "2025-11-09", codBarra: "ES09ITL-4957", bodega: "BODEGA COMODATO TERAPIA"},
+    {codigo: "EDCA08-4810", paciente: "11708 - ANTONIA ARREVA", descripcion: "CARRO ANDADOR-ANTITEQ", estado: "EN TRANSITO", tipoAyuda: "KIT ELECTRÓNICO", subgrupo: "ANDADOR", fecha: "2025-11-06", codBarra: "EDCA08-4810", bodega: "BODEGA COMODATO KINESIOLOGÍA"},
+    {codigo: "EDCA08-4805", paciente: "11247 - ANA SANTIAGO", descripcion: "CARRO ANDADOR REQUERIDO", estado: "DISPONIBLE", tipoAyuda: "KIT ELECTRÓNICO", subgrupo: "ANDADOR", fecha: "2025-10-27", codBarra: "EDCA08-4805", bodega: "BODEGA COMODATO KINESIOLOGÍA"},
+    {codigo: "ES09ITL-4988", paciente: "MAXIMILIANO CARO", descripcion: "SILLA DE RUEDAS ESPECIAL", estado: "DISPONIBLE", tipoAyuda: "SILLA DE RUEDAS", subgrupo: "SILLA", fecha: "2025-11-12", codBarra: "ES09ITL-4988", bodega: "BODEGA COMODATO TERAPIA"}
+  ];
+  function renderTablaArticulos() {
+    const estadoFiltro = document.getElementById('estadoArticulo').value;
+    const tipoAyudaFiltro = document.getElementById('tipoAyuda').value;
+    const codBarraFiltro = document.getElementById('codigoBarra').value.trim().toUpperCase();
+    const subgrupoFiltro = document.getElementById('subgrupoFiltro').value.trim().toUpperCase();
+    const fechaDesde = document.getElementById('fechaDesde') ? document.getElementById('fechaDesde').value : null;
+    const fechaHasta = document.getElementById('fechaHasta') ? document.getElementById('fechaHasta').value : null;
+    let filtered = articulosData.filter(a => {
+      let estadoMatch = estadoFiltro === "TODOS" || a.estado === estadoFiltro;
+      let tipoAyudaMatch = tipoAyudaFiltro === "TODOS" || a.tipoAyuda === tipoAyudaFiltro;
+      let codBarraMatch = !codBarraFiltro || a.codBarra.toUpperCase().includes(codBarraFiltro);
+      let subgrupoMatch = !subgrupoFiltro || a.subgrupo.toUpperCase().includes(subgrupoFiltro);
+      let fechaMatch = true;
+      if (fechaDesde && a.fecha < fechaDesde) fechaMatch = false;
+      if (fechaHasta && a.fecha > fechaHasta) fechaMatch = false;
+      return estadoMatch && tipoAyudaMatch && codBarraMatch && subgrupoMatch && fechaMatch;
+    });
+    const tbody = document.querySelector('#tabla-articulos tbody');
+    tbody.innerHTML = '';
+    filtered.forEach(a => {
+      tbody.innerHTML += `<tr>
+        <td>${a.codigo}</td>
+        <td>${a.paciente}</td>
+        <td>${a.descripcion}</td>
+        <td class="estado-label">${a.estado}</td>
+        <td class="bodega-label">${a.bodega}</td>
+        <td class="acciones-cell">
+          <img src="https://cdn-icons-png.flaticon.com/128/84/84088.png" title="Guardar" onclick="alert('Registro ${a.codigo} guardado')" />
+          <img src="https://cdn-icons-png.flaticon.com/128/1827/1827359.png" title="Editar" onclick="alert('Editar registro ${a.codigo}')" />
+          <img src="https://cdn-icons-png.flaticon.com/128/594/594932.png" title="Ver" onclick="alert('Ver registro ${a.codigo}')" />
+        </td>
+      </tr>`;
+    });
+    document.getElementById('total-registros').innerHTML = `Total: <b>${filtered.length} / ${articulosData.length}</b>`;
+  }
+  renderTablaArticulos();
+  document.getElementById('filtros-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    renderTablaArticulos();
+  });
+  document.getElementById('limpiar-filtros').onclick = function() {
+    document.getElementById('estadoArticulo').value = "TODOS";
+    document.getElementById('tipoAyuda').value = "TODOS";
+    document.getElementById('codigoBarra').value = "";
+    document.getElementById('subgrupoFiltro').value = "";
+    document.getElementById('fechaDesde').value = "";
+    document.getElementById('fechaHasta').value = "";
+    renderTablaArticulos();
+  };
+  // DEVOLUCIÓN COMODATO CORRECTAMENTE FUNCIONAL
+  document.getElementById('btn-confirmar-devolucion').onclick = function() {
+    const articulo = document.getElementById('comodato-articulo').value.trim();
+    if (!articulo) {
+      alert('Debe ingresar el artículo a devolver.');
+      return;
+    }
+    const comentario = document.getElementById('comentario').value.trim();
+    document.getElementById('devolucion-result').innerHTML =
+      `<div class="devolucion-ok">
+        Devolución realizada correctamente para: <b>${articulo}</b>${comentario ? "<br>Comentario: " + comentario : ""}
+      </div>`;
+    document.getElementById('comodato-articulo').value = '';
+    document.getElementById('comentario').value = '';
+    setTimeout(()=>{document.getElementById('devolucion-result').innerHTML='';},3700);
+  };
+</script>
+</body>
+</html>
